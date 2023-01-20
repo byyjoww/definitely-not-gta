@@ -12,6 +12,7 @@ namespace DefinitelyNotGta.Movement
         private float maxMotorTorque = 1000f;
         private float maxTurnAngleBeforeSlow = 55f;        
         private float maxSteeringAngle = 55;
+        private float breakTorque = 10000f;
         private bool overMaxTurnAngle = false;
 
         public PhysicsMovement(Rigidbody rigidbody, Axle[] axles)
@@ -74,6 +75,18 @@ namespace DefinitelyNotGta.Movement
             }
 
             Debug.DrawLine(rigidbody.transform.position, (rigidbody.transform.position) + localDesiredVelocity);
+        }
+
+        public void Break()
+        {
+            foreach (Axle axle in axles)
+            {
+                if (axle.HasBrakes)
+                {
+                    axle.LeftWheel.brakeTorque = breakTorque;
+                    axle.RightWheel.brakeTorque = breakTorque;
+                }
+            }
         }
 
         public void ApplyAntiFlip()

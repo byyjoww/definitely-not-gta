@@ -45,6 +45,17 @@ namespace DefinitelyNotGta.Movement
             physicsMovement.Turn(localDesiredVelocity);
             physicsMovement.Accelerate(localDesiredVelocity);
             navAgent.nextPosition = transform.position;
+
+            if (desiredPosition.HasValue && HasArrived())
+            {
+                Stop();
+                physicsMovement.Break();
+            }
+        }
+
+        private bool HasArrived()
+        {
+            return Vector3.Distance(navAgent.destination, navAgent.transform.position) < navAgent.stoppingDistance + float.Epsilon;
         }
 
         public void Dispose()

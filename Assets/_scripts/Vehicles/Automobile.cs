@@ -1,29 +1,42 @@
 ﻿using DefinitelyNotGta.Movement;
+using System;
 using UnityEngine;
 using UnityEngine.AI;
+using UnityEngine.Events;
 
 namespace DefinitelyNotGta.Vehicles
 {
-    public class Automobile : MonoBehaviour, IVehicle
+    public class Automobile : MonoBehaviour, IVehicle, ITicker
     {
         [SerializeField] private Transform seat = default;
         [SerializeField] private Transform exit = default;
         [SerializeField] private NavMeshAgent navAgent = default;
+        [SerializeField] private new Rigidbody rigidbody = default;
+        [SerializeField] private Axle[] axles = default;
 
         private IDriver driver = default;
         private IMovable movement = default;
 
+        public event UnityAction OnTick;
+
         private void Awake()
         {
-            movement = new NavMeshMovement(navAgent, transform);
+            var navMeshMovement = new NavMeshMovement(navAgent, rigidbody.transform);
+            var physicsMovement = new PhysicsMovement(rigidbody, axles);
+            movement = new NavMeshGuidedMovement(navMeshMovement, physicsMovement, navAgent, rigidbody.transform, this);
+        }
+
+        private void FixedUpdate()
+        {
+            OnTick?.Invoke();
         }
 
         public void StartDriving(IDriver driver)
         {
-            if (this.driver != null) 
+            if (this.driver != null)
             {
                 Debug.LogError($"Vehicle {name} already has a driver.");
-                return; 
+                return;
             }
 
             this.driver = driver;
@@ -54,9 +67,14 @@ namespace DefinitelyNotGta.Vehicles
             movement.Stop();
         }
 
+        private void OnDestroy()
+        {
+            if(movement is IDisposable mDisposable) { mDisposable.Dispose(); }
+        }
+
         private void OnValidate()
         {
             if (navAgent == null) { navAgent = GetComponent<NavMeshAgent>(); }
-        }
+        }        
     }
 }

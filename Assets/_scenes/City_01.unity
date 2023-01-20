@@ -1047,10 +1047,34 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
-    - target: {fileID: 5003200417585222581, guid: c916faecceaab3649886263abea69801,
+    - target: {fileID: 810184766, guid: c916faecceaab3649886263abea69801, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 810184767, guid: c916faecceaab3649886263abea69801, type: 3}
+      propertyPath: m_Speed
+      value: 3.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 810184767, guid: c916faecceaab3649886263abea69801, type: 3}
+      propertyPath: m_Radius
+      value: 0.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 810184767, guid: c916faecceaab3649886263abea69801, type: 3}
+      propertyPath: m_Acceleration
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 810184767, guid: c916faecceaab3649886263abea69801, type: 3}
+      propertyPath: m_AngularSpeed
+      value: 120
+      objectReference: {fileID: 0}
+    - target: {fileID: 810184767, guid: c916faecceaab3649886263abea69801, type: 3}
+      propertyPath: m_StoppingDistance
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 5003200418030432801, guid: c916faecceaab3649886263abea69801,
         type: 3}
-      propertyPath: m_LocalPosition.y
-      value: 0.391
+      propertyPath: m_LocalPosition.z
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 5003200419195449156, guid: c916faecceaab3649886263abea69801,
         type: 3}

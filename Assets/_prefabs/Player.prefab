@@ -48,6 +48,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   model: {fileID: 4130520414129877186}
   navAgent: {fileID: 4130520413814797919}
+  collider: {fileID: 4130520414129877187}
 --- !u!195 &4130520413814797919
 NavMeshAgent:
   m_ObjectHideFlags: 0

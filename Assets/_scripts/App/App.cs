@@ -12,7 +12,7 @@ namespace DefinitelyNotGta.App
     public class App : MonoBehaviour
     {
         [SerializeField] private Player player = default;
-        [SerializeField] private Automobile automobile = default;
+        [SerializeField] private Automobile bus = default;
         [SerializeField] private Location[] locations = default;
 
         public void Start()
@@ -22,19 +22,28 @@ namespace DefinitelyNotGta.App
 
         private void Init()
         {
-            StartCoroutine(SampleTasks());
+            StartCoroutine(Commute());
         }
 
-        private IEnumerator SampleTasks()
+        private IEnumerator Commute()
         {
-            player.Move(locations[0].transform.position);
+            Vector3 busStopEnter = locations[0].transform.position;
+            Vector3 busStopExit = locations[1].transform.position;
+            Vector3 commuteDestination = locations[2].transform.position;
+
+            player.Move(busStopEnter);
             yield return new WaitForSeconds(10);
-            automobile.StartDriving(player);
+
+            bus.StartDriving(player);
             yield return new WaitForSeconds(1);
-            automobile.Move(locations[1].transform.position);
+
+            bus.Move(busStopExit);
             yield return new WaitForSeconds(10);
-            automobile.StopDriving();
+
+            var driver = bus.StopDriving();
             yield return new WaitForSeconds(1);
+
+            (driver as Player).Move(commuteDestination);
             yield return null;
         }
     }

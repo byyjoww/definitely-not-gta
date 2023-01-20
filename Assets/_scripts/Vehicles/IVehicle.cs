@@ -9,6 +9,6 @@ namespace DefinitelyNotGta.Vehicles
     public interface IVehicle : IMovable
     {
         void StartDriving(IDriver driver);
-        void StopDriving();
+        IDriver StopDriving();
     }
 }

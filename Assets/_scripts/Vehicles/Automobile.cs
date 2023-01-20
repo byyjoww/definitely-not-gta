@@ -30,16 +30,18 @@ namespace DefinitelyNotGta.Vehicles
             driver.EnterVehicle(seat);
         }
 
-        public void StopDriving()
+        public IDriver StopDriving()
         {
             if (driver == null) 
             {
                 Debug.LogError($"Vehicle {name} doesn't have a driver.");
-                return; 
+                return null; 
             }
 
             driver.ExitVehicle(exit);
+            IDriver current = this.driver;
             this.driver = null;
+            return current;
         }
 
         public void Move(Vector3 position)

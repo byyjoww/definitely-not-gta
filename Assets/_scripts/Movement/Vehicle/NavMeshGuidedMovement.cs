@@ -11,7 +11,7 @@ namespace DefinitelyNotGta.Movement
         private NavMeshAgent navAgent = default;
         private Transform transform = default;
         private ITicker ticker = default;
-        private Vector3? desiredPosition = default;
+        private Vector3? desiredPosition = null;
 
         public NavMeshGuidedMovement(NavMeshMovement navAgentMovement, PhysicsMovement physicsMovement, NavMeshAgent navAgent, Transform transform, ITicker ticker)
         {
@@ -28,7 +28,9 @@ namespace DefinitelyNotGta.Movement
 
         public void Move(Vector3 position)
         {
+            Debug.Log($"Moving to: {position}");
             this.desiredPosition = position;
+            navAgentMovement.Move(desiredPosition.Value);
         }
 
         public void Stop()
@@ -38,11 +40,10 @@ namespace DefinitelyNotGta.Movement
 
         private void DoMove()
         {
-            if (desiredPosition.HasValue) { navAgentMovement.Move(desiredPosition.Value); }
             Vector3 desiredVelocity = desiredPosition.HasValue ? navAgent.desiredVelocity : Vector3.zero;
             Vector3 localDesiredVelocity = transform.InverseTransformVector(desiredVelocity);
             physicsMovement.Turn(localDesiredVelocity);
-            physicsMovement.Accelerate();
+            physicsMovement.Accelerate(localDesiredVelocity);
             navAgent.nextPosition = transform.position;
         }
 

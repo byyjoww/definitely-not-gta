@@ -10,8 +10,9 @@ namespace DefinitelyNotGta.Movement
 
         private float maxSpeed = 10f;
         private float maxMotorTorque = 1000f;
-        private float maxTurnAngleBeforeSlow = 10f;        
+        private float maxTurnAngleBeforeSlow = 55f;        
         private float maxSteeringAngle = 55;
+        private bool overMaxTurnAngle = false;
 
         public PhysicsMovement(Rigidbody rigidbody, Axle[] axles)
         {
@@ -20,8 +21,17 @@ namespace DefinitelyNotGta.Movement
             this.speed = new SpeedInput();
         }
 
-        public void Accelerate()
+        public void Accelerate(Vector3 localDesiredVelocity)
         {
+            if (overMaxTurnAngle || localDesiredVelocity == Vector3.zero)
+            {
+                speed.Decrement();
+            }
+            else
+            {
+                speed.Increment();
+            }
+
             float torque = maxMotorTorque;
             foreach (Axle axleInfo in axles)
             {
@@ -74,14 +84,7 @@ namespace DefinitelyNotGta.Movement
 
         private void AdjustSpeedBasedOnTurnAngle(float turnAngle)
         {
-            if (turnAngle > maxTurnAngleBeforeSlow || turnAngle < -maxTurnAngleBeforeSlow)
-            {
-                speed.Decrement();
-            }
-            else
-            {
-                speed.Increment();
-            }
+            overMaxTurnAngle = turnAngle > maxTurnAngleBeforeSlow || turnAngle < -maxTurnAngleBeforeSlow;
         }        
     }
 }

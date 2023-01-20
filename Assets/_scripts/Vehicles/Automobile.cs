@@ -21,7 +21,7 @@ namespace DefinitelyNotGta.Vehicles
 
         private void Awake()
         {
-            var navMeshMovement = new NavMeshMovement(navAgent, rigidbody.transform);
+            var navMeshMovement = new NavMeshMovement(navAgent, rigidbody.transform, this);
             var physicsMovement = new PhysicsMovement(rigidbody, axles);
             movement = new NavMeshGuidedMovement(navMeshMovement, physicsMovement, navAgent, rigidbody.transform, this);
         }
@@ -57,9 +57,9 @@ namespace DefinitelyNotGta.Vehicles
             return current;
         }
 
-        public void Move(Vector3 position)
+        public UnityEvent Move(Vector3 position)
         {
-            movement.Move(position);
+            return movement.Move(position);
         }
 
         public void Stop()

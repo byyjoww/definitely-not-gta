@@ -1,10 +1,11 @@
 ﻿using UnityEngine;
+using UnityEngine.Events;
 
 namespace DefinitelyNotGta.Movement
 {
     public interface IMovable
     {
-        void Move(Vector3 position);
+        UnityEvent Move(Vector3 position);
         void Stop();
     }
 }

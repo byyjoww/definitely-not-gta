@@ -22,29 +22,22 @@ namespace DefinitelyNotGta.App
 
         private void Init()
         {
-            StartCoroutine(Commute());
-        }
-
-        private IEnumerator Commute()
-        {
             Vector3 busStopEnter = locations[0].transform.position;
             Vector3 busStopExit = locations[1].transform.position;
             Vector3 commuteDestination = locations[2].transform.position;
 
-            player.Move(busStopEnter);
-            yield return new WaitForSeconds(10);
-
-            bus.StartDriving(player);
-            yield return new WaitForSeconds(1);
-
-            bus.Move(busStopExit);
-            yield return new WaitForSeconds(10);
-
-            var driver = bus.StopDriving();
-            yield return new WaitForSeconds(1);
-
-            (driver as Player).Move(commuteDestination);
-            yield return null;
+            player.Move(busStopEnter).AddListener(delegate 
+            {
+                bus.StartDriving(player);
+                bus.Move(busStopExit).AddListener(delegate 
+                {
+                    var driver = bus.StopDriving();
+                    (driver as Player).Move(commuteDestination).AddListener(delegate 
+                    {
+                        Debug.Log($"Finished commuting");
+                    });
+                });
+            });
         }
     }
 }

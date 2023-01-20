@@ -2,10 +2,11 @@
 using DefinitelyNotGta.Vehicles;
 using UnityEngine;
 using UnityEngine.AI;
+using UnityEngine.Events;
 
 namespace DefinitelyNotGta.Units
 {
-    public class Player : MonoBehaviour, IDriver, IMovable, ITeleportable
+    public class Player : MonoBehaviour, IDriver, IMovable, ITeleportable, ITicker
     {
         [SerializeField] private GameObject model = default;
         [SerializeField] private NavMeshAgent navAgent = default;
@@ -13,9 +14,11 @@ namespace DefinitelyNotGta.Units
 
         private IMovable movement = default;
 
+        public event UnityAction OnTick;
+
         private void Awake()
         {
-            movement = new NavMeshMovement(navAgent, transform);
+            movement = new NavMeshMovement(navAgent, transform, this);
         }
 
         public void Teleport(Vector3 position)
@@ -41,14 +44,19 @@ namespace DefinitelyNotGta.Units
             navAgent.enabled = true;            
         }        
 
-        public void Move(Vector3 position)
+        public UnityEvent Move(Vector3 position)
         {
-            movement.Move(position);
+            return movement.Move(position);
         }
 
         public void Stop()
         {
             movement.Stop();
+        }
+
+        private void Update()
+        {
+            OnTick?.Invoke();
         }
 
         private void OnValidate()

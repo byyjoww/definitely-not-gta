@@ -20,14 +20,14 @@ namespace DefinitelyNotGta.Vehicles
 
         public void StartDriving(IDriver driver)
         {
-            if (driver != null) 
+            if (this.driver != null) 
             {
                 Debug.LogError($"Vehicle {name} already has a driver.");
                 return; 
             }
 
             this.driver = driver;
-            driver.EnterVehicle(seat);
+            this.driver.EnterVehicle(seat);
         }
 
         public IDriver StopDriving()
@@ -40,7 +40,7 @@ namespace DefinitelyNotGta.Vehicles
 
             driver.ExitVehicle(exit);
             IDriver current = this.driver;
-            this.driver = null;
+            driver = null;
             return current;
         }
 

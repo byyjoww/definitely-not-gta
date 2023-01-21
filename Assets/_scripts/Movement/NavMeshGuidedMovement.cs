@@ -7,16 +7,16 @@ using UnityEngine.Events;
 namespace DefinitelyNotGta.Movement
 {
     public class NavMeshGuidedMovement : IMovable, IDisposable
-    {        
+    {
         private NavMeshMovement navAgentMovement = default;
         private PhysicsMovement physicsMovement = default;
         private NavMeshAgent navAgent = default;
         private Transform transform = default;
         private ITicker ticker = default;
-        private Vector3? desiredPosition = null;
+        private Vector3? destination = null;
         private UnityEvent onArrival = default;
 
-        private bool isMoving => desiredPosition.HasValue;        
+        private bool hasDestination => destination.HasValue;
 
         public NavMeshGuidedMovement(NavMeshMovement navAgentMovement, PhysicsMovement physicsMovement, NavMeshAgent navAgent, Transform transform, ITicker ticker)
         {
@@ -28,40 +28,40 @@ namespace DefinitelyNotGta.Movement
             navAgent.updateUpAxis = false;
             this.transform = transform;
             this.ticker = ticker;
-            ticker.OnTick += DoMove;
+            ticker.OnTick += Move;
         }
 
-        public UnityEvent Move(Vector3 position)
+        public UnityEvent MoveTo(Vector3 position)
         {
-            if (isMoving) { Stop(); }
+            // If destination is already set them stop before reassign
+            if (hasDestination) { Stop(); }
             Debug.Log($"Moving to: {position}");
-            this.desiredPosition = position;
-            navAgentMovement.Move(desiredPosition.Value);
+            this.destination = position;
+            navAgentMovement.MoveTo(destination.Value);
             onArrival = new UnityEvent();
             return onArrival;
         }
 
         public void Stop()
         {
-            physicsMovement.Break();
-            this.desiredPosition = null;            
+            physicsMovement.Brake();
+            this.destination = null;
             this.onArrival = null;
         }
 
-        private void DoMove()
+        private void Move()
         {
-            Vector3 desiredVelocity = desiredPosition.HasValue ? navAgent.desiredVelocity : Vector3.zero;
-            Vector3 localDesiredVelocity = transform.InverseTransformVector(desiredVelocity);
-            physicsMovement.Turn(localDesiredVelocity);
-            physicsMovement.Accelerate(localDesiredVelocity);
+            Vector3 desiredVelocity = destination.HasValue ? navAgent.desiredVelocity : Vector3.zero;
+            Vector3 magnitudeVector = transform.InverseTransformVector(desiredVelocity);
+            physicsMovement.Turn(magnitudeVector);
+            physicsMovement.Accelerate(magnitudeVector);
             navAgent.nextPosition = transform.position;
 
-            if (desiredPosition.HasValue && HasArrived())
+            if (hasDestination && HasArrived())
             {
-                var arrival = onArrival;
                 Stop();
-                arrival?.Invoke();
-                arrival?.RemoveAllListeners();
+                onArrival?.Invoke();
+                onArrival?.RemoveAllListeners();
             }
         }
 
@@ -74,7 +74,7 @@ namespace DefinitelyNotGta.Movement
 
         public void Dispose()
         {
-            ticker.OnTick -= DoMove;
+            ticker.OnTick -= Move;
         }
     }
 }

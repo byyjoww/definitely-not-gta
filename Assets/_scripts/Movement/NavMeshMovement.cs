@@ -26,9 +26,9 @@ namespace DefinitelyNotGta.Movement
             this.ticker = ticker;
         }
 
-        public UnityEvent Move(Vector3 position)
+        public UnityEvent MoveTo(Vector3 position)
         {
-            if (isMoving) { Stop(); }            
+            if (isMoving) { Stop(); }
             if (NavMesh.SamplePosition(position, out NavMeshHit hit, maxNavMeshSampleDistance, -1))
             {
                 navAgent.isStopped = false;

@@ -1,4 +1,5 @@
 ﻿using DefinitelyNotGta.Movement;
+using DefinitelyNotGta.Utils;
 using DefinitelyNotGta.Vehicles;
 using UnityEngine;
 using UnityEngine.AI;
@@ -8,7 +9,7 @@ namespace DefinitelyNotGta.Units
 {
     public class Player : MonoBehaviour, IDriver, IMovable, ITeleportable, ITicker
     {
-        [SerializeField] private GameObject model = default;
+        [SerializeField] private Animator animator = default;
         [SerializeField] private NavMeshAgent navAgent = default;
         [SerializeField] private new Collider collider = default;
 
@@ -33,6 +34,7 @@ namespace DefinitelyNotGta.Units
             navAgent.enabled = false;
             collider.enabled = false;
             gameObject.transform.position = seat.position;
+            gameObject.transform.rotation = seat.rotation;
             gameObject.transform.SetParent(seat);
         }
 
@@ -40,13 +42,17 @@ namespace DefinitelyNotGta.Units
         {
             gameObject.transform.SetParent(null);
             gameObject.transform.position = exit.position;
+            gameObject.transform.rotation = exit.rotation;
             collider.enabled = true;
-            navAgent.enabled = true;            
-        }        
+            navAgent.enabled = true;
+        }
 
         public UnityEvent Move(Vector3 position)
         {
-            return movement.Move(position);
+            var m = movement.Move(position);
+            SetMoving();
+            m.AddListener(SetIdle);
+            return m;
         }
 
         public void Stop()
@@ -57,6 +63,16 @@ namespace DefinitelyNotGta.Units
         private void Update()
         {
             OnTick?.Invoke();
+        }
+
+        private void SetIdle()
+        {
+            animator.SetBool("isMoving", false);
+        }
+
+        private void SetMoving()
+        {
+            animator.SetBool("isMoving", true);
         }
 
         private void OnValidate()

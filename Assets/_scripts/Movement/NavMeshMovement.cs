@@ -1,3 +1,4 @@
+using DefinitelyNotGta.Utils;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -27,10 +28,10 @@ namespace DefinitelyNotGta.Movement
 
         public UnityEvent Move(Vector3 position)
         {
-            if (isMoving) { Stop(); }
-            navAgent.isStopped = false;            
+            if (isMoving) { Stop(); }            
             if (NavMesh.SamplePosition(position, out NavMeshHit hit, maxNavMeshSampleDistance, -1))
             {
+                navAgent.isStopped = false;
                 desiredPosition = hit.position;
                 navAgent.SetDestination(hit.position);
                 onArrival = new UnityEvent();
@@ -51,7 +52,7 @@ namespace DefinitelyNotGta.Movement
 
         private void CheckArrival()
         {
-            if (desiredPosition.HasValue && HasArrived())
+            if (desiredPosition.HasValue && HasArrived() && !navAgent.isStopped)
             {
                 var arrival = onArrival;
                 Stop();

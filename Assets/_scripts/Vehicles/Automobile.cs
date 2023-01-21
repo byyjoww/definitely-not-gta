@@ -1,4 +1,5 @@
 ﻿using DefinitelyNotGta.Movement;
+using DefinitelyNotGta.Utils;
 using System;
 using UnityEngine;
 using UnityEngine.AI;
@@ -8,6 +9,7 @@ namespace DefinitelyNotGta.Vehicles
 {
     public class Automobile : MonoBehaviour, IVehicle, ITicker
     {
+        [SerializeField] private PhysicsMovement.Config config = default;
         [SerializeField] private Transform seat = default;
         [SerializeField] private Transform exit = default;
         [SerializeField] private NavMeshAgent navAgent = default;
@@ -22,8 +24,9 @@ namespace DefinitelyNotGta.Vehicles
         private void Awake()
         {
             var navMeshMovement = new NavMeshMovement(navAgent, rigidbody.transform, this);
-            var physicsMovement = new PhysicsMovement(rigidbody, axles);
+            var physicsMovement = new PhysicsMovement(rigidbody, axles, config);
             movement = new NavMeshGuidedMovement(navMeshMovement, physicsMovement, navAgent, rigidbody.transform, this);
+            var wheelAnimations = new WheelAnimation(rigidbody, axles, this);
         }
 
         private void FixedUpdate()

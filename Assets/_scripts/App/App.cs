@@ -13,7 +13,7 @@ namespace DefinitelyNotGta.App
     {
         [SerializeField] private Player player = default;
         [SerializeField] private Automobile bus = default;
-        [SerializeField] private Location[] locations = default;
+        [SerializeField] private Transform[] locations = default;
 
         public void Start()
         {
@@ -22,9 +22,9 @@ namespace DefinitelyNotGta.App
 
         private void Init()
         {
-            Vector3 busStopEnter = locations[0].transform.position;
-            Vector3 busStopExit = locations[1].transform.position;
-            Vector3 commuteDestination = locations[2].transform.position;
+            Vector3 busStopEnter = locations[0].position;
+            Vector3 busStopExit = locations[1].position;
+            Vector3 commuteDestination = locations[2].position;
 
             player.Move(busStopEnter).AddListener(delegate 
             {

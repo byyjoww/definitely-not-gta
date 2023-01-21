@@ -4,21 +4,33 @@ namespace DefinitelyNotGta.Movement
 {
     public class PhysicsMovement
     {
+        [System.Serializable]
+        public class Config
+        {
+            [SerializeField] private float maxSpeed = 5f;
+            [SerializeField] private float maxSteeringAngle = 55f;
+            [SerializeField] private float motorTorque = 800f;
+            [SerializeField] private float breakTorque = 10000f;
+            [SerializeField] private float maxTurnAngleBeforeSlow = 35f;
+
+            public float MaxSpeed => maxSpeed;
+            public float MotorTorque => motorTorque;            
+            public float BreakTorque => breakTorque;
+            public float MaxSteeringAngle => maxSteeringAngle;
+            public float MaxTurnAngleBeforeSlow => maxTurnAngleBeforeSlow;
+        }
+
         private Rigidbody rigidbody = default;
         private Axle[] axles = default;
         private SpeedInput speed = default;
-
-        private float maxSpeed = 10f;
-        private float maxMotorTorque = 1000f;
-        private float maxTurnAngleBeforeSlow = 55f;        
-        private float maxSteeringAngle = 55;
-        private float breakTorque = 10000f;
+        private Config config = default;        
         private bool overMaxTurnAngle = false;
 
-        public PhysicsMovement(Rigidbody rigidbody, Axle[] axles)
+        public PhysicsMovement(Rigidbody rigidbody, Axle[] axles, Config config)
         {
             this.rigidbody = rigidbody;
             this.axles = axles;
+            this.config = config;
             this.speed = new SpeedInput();
         }
 
@@ -33,7 +45,7 @@ namespace DefinitelyNotGta.Movement
                 speed.Increment();
             }
 
-            float torque = maxMotorTorque;
+            float torque = config.MotorTorque;
             foreach (Axle axleInfo in axles)
             {
                 if (axleInfo.HasMotor)
@@ -43,10 +55,10 @@ namespace DefinitelyNotGta.Movement
                 }
             }
 
-            if (rigidbody.velocity.magnitude > maxSpeed)
+            if (rigidbody.velocity.magnitude > config.MaxSpeed)
             {
                 Vector3 velocity = rigidbody.velocity.normalized;
-                velocity *= maxSpeed;
+                velocity *= config.MaxSpeed;
 
                 rigidbody.velocity = Vector3.Lerp(rigidbody.velocity, velocity, 0.125f);
             }
@@ -61,7 +73,7 @@ namespace DefinitelyNotGta.Movement
         public void Turn(Vector3 localDesiredVelocity)
         {
             bool movingForward = localDesiredVelocity.magnitude > 0;
-            float newSteer = (localDesiredVelocity.x / localDesiredVelocity.magnitude) * maxSteeringAngle;
+            float newSteer = (localDesiredVelocity.x / localDesiredVelocity.magnitude) * config.MaxSteeringAngle;
             AdjustSpeedBasedOnTurnAngle(newSteer);
             float steer = movingForward ? newSteer : -newSteer;
 
@@ -83,8 +95,8 @@ namespace DefinitelyNotGta.Movement
             {
                 if (axle.HasBrakes)
                 {
-                    axle.LeftWheel.brakeTorque = breakTorque;
-                    axle.RightWheel.brakeTorque = breakTorque;
+                    axle.LeftWheel.brakeTorque = config.BreakTorque;
+                    axle.RightWheel.brakeTorque = config.BreakTorque;
                 }
             }
         }
@@ -97,7 +109,7 @@ namespace DefinitelyNotGta.Movement
 
         private void AdjustSpeedBasedOnTurnAngle(float turnAngle)
         {
-            overMaxTurnAngle = turnAngle > maxTurnAngleBeforeSlow || turnAngle < -maxTurnAngleBeforeSlow;
+            overMaxTurnAngle = turnAngle > config.MaxTurnAngleBeforeSlow || turnAngle < -config.MaxTurnAngleBeforeSlow;
         }        
     }
 }

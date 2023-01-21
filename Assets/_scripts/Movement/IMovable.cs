@@ -5,7 +5,8 @@ namespace DefinitelyNotGta.Movement
 {
     public interface IMovable
     {
-        UnityEvent Move(Vector3 position);
+        UnityEvent MoveTo(Vector3 position);
+
         void Stop();
     }
 }

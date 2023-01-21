@@ -26,7 +26,6 @@ namespace DefinitelyNotGta.Vehicles
             var navMeshMovement = new NavMeshMovement(navAgent, rigidbody.transform, this);
             var physicsMovement = new PhysicsMovement(rigidbody, axles, config);
             movement = new NavMeshGuidedMovement(navMeshMovement, physicsMovement, navAgent, rigidbody.transform, this);
-            var wheelAnimations = new WheelAnimation(rigidbody, axles, this);
         }
 
         private void FixedUpdate()
@@ -48,10 +47,10 @@ namespace DefinitelyNotGta.Vehicles
 
         public IDriver StopDriving()
         {
-            if (driver == null) 
+            if (driver == null)
             {
                 Debug.LogError($"Vehicle {name} doesn't have a driver.");
-                return null; 
+                return null;
             }
 
             driver.ExitVehicle(exit);
@@ -60,9 +59,9 @@ namespace DefinitelyNotGta.Vehicles
             return current;
         }
 
-        public UnityEvent Move(Vector3 position)
+        public UnityEvent MoveTo(Vector3 position)
         {
-            return movement.Move(position);
+            return movement.MoveTo(position);
         }
 
         public void Stop()
@@ -72,12 +71,12 @@ namespace DefinitelyNotGta.Vehicles
 
         private void OnDestroy()
         {
-            if(movement is IDisposable mDisposable) { mDisposable.Dispose(); }
+            if (movement is IDisposable mDisposable) { mDisposable.Dispose(); }
         }
 
         private void OnValidate()
         {
             if (navAgent == null) { navAgent = GetComponent<NavMeshAgent>(); }
-        }        
+        }
     }
 }

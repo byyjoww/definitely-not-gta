@@ -7,7 +7,7 @@ using UnityEngine.Events;
 
 namespace DefinitelyNotGta.Units
 {
-    public class Player : MonoBehaviour, IDriver, IMovable, ITeleportable, ITicker
+    public class Player : MonoBehaviour, IDriver, IMovable, ITicker
     {
         [SerializeField] private Animator animator = default;
         [SerializeField] private NavMeshAgent navAgent = default;
@@ -47,9 +47,9 @@ namespace DefinitelyNotGta.Units
             navAgent.enabled = true;
         }
 
-        public UnityEvent Move(Vector3 position)
+        public UnityEvent MoveTo(Vector3 position)
         {
-            var m = movement.Move(position);
+            var m = movement.MoveTo(position);
             SetMoving();
             m.AddListener(SetIdle);
             return m;
@@ -80,5 +80,5 @@ namespace DefinitelyNotGta.Units
             if (navAgent == null) { navAgent = GetComponent<NavMeshAgent>(); }
             if (collider == null) { collider = GetComponent<Collider>(); }
         }
-    }    
+    }
 }

@@ -26,13 +26,13 @@ namespace DefinitelyNotGta.App
             Vector3 busStopExit = locations[1].position;
             Vector3 commuteDestination = locations[2].position;
 
-            player.Move(busStopEnter).AddListener(delegate 
+            player.MoveTo(busStopEnter).AddListener(delegate
             {
                 bus.StartDriving(player);
-                bus.Move(busStopExit).AddListener(delegate 
+                bus.MoveTo(busStopExit).AddListener(delegate
                 {
                     var driver = bus.StopDriving();
-                    (driver as Player).Move(commuteDestination).AddListener(delegate 
+                    (driver as Player).MoveTo(commuteDestination).AddListener(delegate
                     {
                         Debug.Log($"Finished commuting");
                     });

@@ -74,7 +74,7 @@ namespace DefinitelyNotGta.Movement
 
             foreach (Axle axle in axles)
             {
-                axle.SetSteer(steer);
+                axle.SetSteer(Mathf.Lerp(axle.currentSteeringAngle, steer, 0.09f));
             }
 
             Debug.DrawLine(rigidbody.transform.position, (rigidbody.transform.position) + localDesiredVelocity);

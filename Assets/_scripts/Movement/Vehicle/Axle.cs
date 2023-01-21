@@ -19,6 +19,7 @@ namespace DefinitelyNotGta.Movement
         public bool HasSteering => hasSteering;
         public bool HasBrakes => hasBrakes;
 
+        public float currentSteeringAngle => leftWheel.collider.steerAngle;
 
         private void UpdateWheelTransform(Wheel wheel)
         {

@@ -57,6 +57,11 @@ namespace DefinitelyNotGta.Movement
             physicsMovement.Accelerate(magnitudeVector);
             navAgent.nextPosition = transform.position;
 
+            Debug.Log(navAgent.nextPosition);
+
+            Debug.DrawRay(transform.position, magnitudeVector, Color.red);
+            Debug.DrawRay(transform.position, desiredVelocity, Color.green);
+
             if (hasDestination && HasArrived())
             {
                 Stop();

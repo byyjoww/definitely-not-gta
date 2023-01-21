@@ -15,6 +15,7 @@ namespace DefinitelyNotGta.Vehicles
         [SerializeField] private NavMeshAgent navAgent = default;
         [SerializeField] private new Rigidbody rigidbody = default;
         [SerializeField] private Axle[] axles = default;
+        [SerializeField] private Transform steertingAxis;
 
         private IDriver driver = default;
         private IMovable movement = default;
@@ -25,7 +26,7 @@ namespace DefinitelyNotGta.Vehicles
         {
             var navMeshMovement = new NavMeshMovement(navAgent, rigidbody.transform, this);
             var physicsMovement = new PhysicsMovement(rigidbody, axles, config);
-            movement = new NavMeshGuidedMovement(navMeshMovement, physicsMovement, navAgent, rigidbody.transform, this);
+            movement = new NavMeshGuidedMovement(navMeshMovement, physicsMovement, navAgent, steertingAxis, this);
         }
 
         private void FixedUpdate()

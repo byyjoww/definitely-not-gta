@@ -34,7 +34,7 @@ namespace DefinitelyNotGta.Movement
         public UnityEvent MoveTo(Vector3 position)
         {
             // If destination is already set them stop before reassign
-            if (hasDestination) { Stop(); }
+            // if (hasDestination) { Stop(); }
             Debug.Log($"Moving to: {position}");
             this.destination = position;
             navAgentMovement.MoveTo(destination.Value);
@@ -52,29 +52,30 @@ namespace DefinitelyNotGta.Movement
         private void Move()
         {
             Vector3 desiredVelocity = destination.HasValue ? navAgent.desiredVelocity : Vector3.zero;
-            Vector3 magnitudeVector = transform.InverseTransformVector(desiredVelocity);
+            Vector3 magnitudeVector = transform.InverseTransformVector((destination.Value - transform.position)).normalized;
             physicsMovement.Turn(magnitudeVector);
-            physicsMovement.Accelerate(magnitudeVector);
+            physicsMovement.Accelerate(new Vector3(1, 1, 1));
             navAgent.nextPosition = transform.position;
-
-            Debug.Log(navAgent.nextPosition);
 
             Debug.DrawRay(transform.position, magnitudeVector, Color.red);
             Debug.DrawRay(transform.position, desiredVelocity, Color.green);
 
             if (hasDestination && HasArrived())
             {
-                Stop();
+                // Stop();
                 onArrival?.Invoke();
-                onArrival?.RemoveAllListeners();
+                // onArrival?.RemoveAllListeners();
             }
         }
 
         private bool HasArrived()
         {
-            var destination = new Vector3(navAgent.destination.x, navAgent.transform.position.y, navAgent.destination.z);
-            var distance = Vector3.Distance(destination, navAgent.transform.position);
-            return distance <= navAgent.stoppingDistance + float.Epsilon;
+            var dest = new Vector3(destination.Value.x, 0, destination.Value.z);
+            var ag = new Vector3(navAgent.transform.position.x, 0, navAgent.transform.position.z);
+            var distance = Vector3.Distance(dest, ag);
+
+            Debug.Log($"distance {distance}");
+            return distance <= 2;
         }
 
         public void Dispose()
